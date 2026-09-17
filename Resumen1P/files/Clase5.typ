@@ -95,25 +95,7 @@ $ |V_o| = V_d dot frac(N_2, N_1) dot frac(D, 1 - D) $
 
 #align(center)[#image("images/fly-curves.png", width: 70%)]
 
-= Inductancia de Dispersión y Circuito Snubber
-
-#box(
-  stroke: 1pt,
-  inset: 12pt,
-  radius: 8pt,
-  width: 100%,
-)[
-  *Efecto de la Inductancia de Dispersión ($L_"dispersión"$)*
-  El flujo generado por el devanado primario que no se concatena con el secundario ($L_"l1"$) no puede transferir su energía al secundario durante el apagado. Esto genera sobrepicos de tensión destructivos $v = L_1 dot (d i) / (d t)$ sobre el transistor MOSFET.
-
-  #v(4pt)
-  *Función del Circuito Snubber*
-  Se añade un circuito de protección (red RCD o Diodo Zener) en paralelo con el primario para fijar y disipar la energía de $L_"l1"$, recortando los picos de tensión a niveles seguros.
-]
-
-#v(10pt)
-
-= Ventajas y Desventajas del Convertidor Flyback
+== Ventajas y Desventajas del Convertidor Flyback
 
 #box(
   stroke: 0.5pt,
@@ -143,3 +125,22 @@ $ |V_o| = V_d dot frac(N_2, N_1) dot frac(D, 1 - D) $
     ]
   )
 ]
+
+= Inductancia de Dispersión y Circuito Snubber
+
+#align(center)[#image("images/snubber.png", width: 80%)]
+
+  *Efecto de la Inductancia de Dispersión ($L_"dispersión"$)*
+  El flujo generado por el devanado primario que no se concatena con el secundario ($L_"l1"$) no puede transferir su energía al secundario durante el apagado. Esto genera sobrepicos de tensión destructivos $v = L_1 dot (d i) / (d t)$ sobre el transistor MOSFET.
+
+  #align(center)[#image("images/nucleo.png", width: 40%)]
+
+  #v(4pt)
+  *Función del Circuito Snubber*
+  Se añade un circuito de protección (red RCD o Diodo Zener) en paralelo con el primario para fijar y disipar la energía de $L_"l1"$, recortando los picos de tensión a niveles seguros.
+
+#align(center)[#image("images/snubberRCD.png", width: 60%)]
+
+Reduce la tension en el transistor. $R_"sn"$ disipa en forma de calor la corriente de fuga producida por el indcutor de dispersion primario y $C_"sn"$ garantiza una tension continua sin mucha oscilacion. Si el snubber no tiene los valores optimizados puede sobre-oscilar.
+
+#align(center)[#image("images/snubberRCD2.png", width: 60%)]
