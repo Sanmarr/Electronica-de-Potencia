@@ -108,3 +108,12 @@ Resumen
 
 #pagebreak()
 #include "files/Clase1.typ"
+
+#pagebreak()
+#include "files/Clase2.typ"
+
+#pagebreak()
+#include "files/Clase3.typ"
+
+#pagebreak()
+#include "files/Clase5.typ"
