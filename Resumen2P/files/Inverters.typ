@@ -39,10 +39,12 @@
 
 // (Clase 14)
 // =====================================================================
-= La rama de inversor 
+= Inversores DC-AC
 // =====================================================================
 
-== De dos convertidores a una sola rama
+== La rama de inversor 
+
+=== De dos convertidores a una sola rama
 
 Un *Buck* baja tensión llevando energía de $V_d$ a $V_o$ (con $V_d > V_o$) usando un transistor $Q_1$ y un diodo. Un *Boost* hace el camino contrario, de $V_o$ a $V_d$, usando un transistor $Q_2$ y su diodo.
 
@@ -60,7 +62,7 @@ Si juntamos los dos circuitos compartiendo el mismo inductor, obtenemos una *ram
   - Es una rama *bidireccional*: la corriente del inductor puede ser positiva o negativa.
 ]
 
-== Qué pasa en cada estado
+=== Estados de conducción y conmutación
 
 La clave es que *el inductor fuerza la corriente*: cuando se apaga un transistor, la corriente del inductor no puede cortarse y enciende el diodo del otro transistor. Eso fija la tensión $v_a$.
 
@@ -77,11 +79,11 @@ La clave es que *el inductor fuerza la corriente*: cuando se apaga un transistor
 
 #figure(
   image("images/formas.png", width: 100%)
-) <fig:BuckBoost>
+) <fig:formas>
 
 
 
-== Ambas llaves apagadas y blanking-time
+=== Blanking-time y prevención de shoot-through
 
 Si $Q_1 = Q_2 = "OFF"$, la tensión $v_a$ depende del *sentido de la corriente* del inductor, que enciende un diodo o el otro y clava $v_a$ en $0$ o en $V_d$.
 
@@ -89,21 +91,17 @@ Si $Q_1 = Q_2 = "OFF"$, la tensión $v_a$ depende del *sentido de la corriente* 
   Esta situación debe evitarse, pero se produce a propósito durante un tiempo corto (*blanking-time* o tiempo muerto) como margen de seguridad para evitar el *shoot-through* (cortocircuito de la rama si $Q_1$ y $Q_2$ conducen a la vez). Genera una distorsión no lineal llamada *efecto del blanking-time*.
 ]
 
-== El ciclo de trabajo y la corriente del inductor
+=== Ciclo de trabajo y corriente del inductor
 
 El valor medio de $v_a$ es $D_(Q_1) dot V_d$. Si ese valor es mayor que $V_o$, el inductor ve tensión media positiva y su corriente $i_L$ *sube*; si es menor, *baja*.
 
-#ejemplo[
-  Con $V_d = 300 "V"$ y $V_o = 150 "V"$:
-  - $D_(Q_1) = 0.6$: tensión media en $L$ = $0.6 dot 300 - 150 = +30 "V"$ → $i_L$ crece.
-  - $D_(Q_1) = 0.4$: tensión media en $L$ = $0.4 dot 300 - 150 = -30 "V"$ → $i_L$ decrece (puede volverse negativa: la energía vuelve a $V_d$).
-]
+
 
 // =====================================================================
-= PWM sinusoidal (SPWM)
+== PWM sinusoidal (SPWM)
 // =====================================================================
 
-== Idea
+=== Principio de modulación y armónico fundamental
 
 Para fabricar una tensión alterna con una rama, se *compara* una señal de control sinusoidal con una portadora triangular:
 
@@ -114,7 +112,7 @@ Dentro de un período de conmutación la señal de control se puede considerar *
 
 $ v_(A o) = v_"control" / hat(V)_"tri" dot V_d / 2 $
 
-donde al ser $v_"control"$ una senoidal, esos promedios van dibujando otra senoidal, de la misma frecuencia. Esa es la fundamentalÑ
+donde al ser $v_"control"$ una senoidal, esos promedios van dibujando otra senoidal, de la misma frecuencia. Esa es la fundamental:
 
 $ 
   v_(A o,"fundamental") = v_(A o 1) =
@@ -143,7 +141,7 @@ $
   Si subís $m_a$ a $1.0$, el pico sube a $200 "V"$.
 ]
 
-== Armónicos de la salida
+=== Armónicos de la salida
 
 El PWM no genera una senoidal perfecta: aparecen armónicos *alrededor de $m_f$, $2 m_f$, $3 m_f$...* (múltiplos de la frecuencia de la portadora). Por eso se filtra con inductores o un filtro LC.
 
@@ -169,11 +167,9 @@ $
 
 
 
-// =====================================================================
-= Inversor trifásico
-// =====================================================================
+== Inversor trifásico
 
-== Estructura
+=== Estructura y tensiones de línea
 
 Son *tres ramas* (A, B y C) conectadas al mismo bus de continua $V_d$. El punto medio del capacitor $N$ es *ficticio*: no se conecta a nada, solo sirve como referencia para analizar.
 
@@ -195,7 +191,7 @@ $ v_(A B) = v_(A N) - v_(B N) $
 
 //#imagen[Señales de control trifásicas y tensiones $v_(A N)$, $v_(B N)$, $v_(A B)$]
 
-== Elegir $m_f$ inteligentemente
+=== Selección inteligente de $m_f$
 
 #idea[
   - Si $m_f$ es *entero e impar* → desaparecen los armónicos *pares*.
@@ -204,7 +200,7 @@ $ v_(A B) = v_(A N) - v_(B N) $
 
 
 
-== Rango lineal y sobremodulación
+=== Rango lineal y sobremodulación
 
 - *Lineal* ($m_a <= 1$): la fundamental crece proporcional a $m_a$:
   $ V_("LL1,rms") = sqrt(3) / (2 sqrt(2)) dot m_a dot V_d approx 0.612 dot m_a dot V_d $
@@ -218,17 +214,15 @@ $ v_(A B) = v_(A N) - v_(B N) $
   $V_d = 400 "V"$ y $m_a = 0.8$: $V_("LL1,rms") = 0.612 dot 0.8 dot 400 approx 196 "V"$ de línea. El máximo teórico (onda cuadrada) sería $0.78 dot 400 = 312 "V"$.
 ]
 
-// =====================================================================
-= Disparo de transistores flotantes
-// =====================================================================
+== Disparo de transistores flotantes
 
-== El problema
+=== El problema del transistor flotante
 
 En una rama, el transistor de arriba ($Q_1$) tiene su source en $v_a$, que *oscila entre $0$ y $V_d$*. Pero el gate se puede polarizar solo con unos $20 "V"$ respecto del source ($B V_(G S) approx 20 "V"$), mientras que $V_d approx 300$ a $400 "V"$. Por lo tanto, la tensión de gate de $Q_1$ debe *"flotar"* acompañando a $v_a$.
 
 #imagen[Rama con $V_(G S)$ en $Q_1$ y $Q_2$]
 
-== Bootstrap
+=== Circuito Bootstrap
 
 Es la solución más simple y barata.
 
@@ -242,7 +236,7 @@ Es la solución más simple y barata.
   Limitación: el capacitor solo se recarga cuando $Q_2$ conduce. Si $Q_2$ nunca se enciende, $C_B$ se descarga.
 ]
 
-== Otros métodos
+=== Otros métodos de disparo
 
 - *Alimentación aislada + optoacoplador:* cada transistor tiene su propia fuente aislada y el comando llega por un optoacoplador.
 - *Disparo "magnético":* un transformador con aislación tipo flyback lleva la energía al gate.
@@ -251,11 +245,9 @@ Es la solución más simple y barata.
   Para el optoacoplador *no usar un 4N35 o similar* (muy lento). Usar uno pensado para gate-drive, como el FOD3180 o el HCPL314.
 ]
 
-// =====================================================================
-= Conexión del inversor con la red
-// =====================================================================
+== Conexión del inversor con la red
 
-== Circuito y diagrama fasorial
+=== Circuito y diagrama fasorial
 
 El inversor se conecta a la red (a través de un transformador) con un inductor $L$ por fase. A frecuencia fundamental se analiza con fasores:
 
@@ -269,7 +261,7 @@ donde $bold(E)_A$ es la tensión de la red (fija) y $bold(V)_(A n)$ es la que el
   Cambiando *amplitud y fase* de $bold(V)_(A n)$ (el inversor lo controla con $m_a$ y la fase de la senoidal de control), se cambia $bold(I)_A$ y con ella el flujo de potencia. El ángulo $delta$ entre $bold(V)_(A n)$ y $bold(E)_A$ es el que mueve la potencia activa $P$.
 ]
 
-== Los cuatro casos
+=== Los cuatro casos de flujo de potencia
 
 #table(
   columns: (auto, 1fr),
@@ -289,11 +281,12 @@ donde $bold(E)_A$ es la tensión de la red (fija) y $bold(V)_(A n)$ es la que el
   Si el mismo equipo pasa a ser un rectificador activo (carga de baterías), $bold(I)_A$ se invierte y pasa a estar en contrafase.
 ]
 
+// (Clase 15)
 // =====================================================================
-= Convertidores directos / aislados (Clase 15)
+= Convertidores directos y aislados
 // =====================================================================
 
-== Circuitos básicos
+== Circuitos básicos (Half-Bridge, Full-Bridge y Push-Pull)
 
 Son convertidores DC-DC con *transformador* de aislación, relación $N_1 : N_2$, y una *Buck a la salida* (rectificador + filtro LC). Los tres circuitos básicos de entrada son:
 
@@ -305,7 +298,7 @@ Son convertidores DC-DC con *transformador* de aislación, relación $N_1 : N_2$
 
 Para analizar cualquiera de ellos, se reemplaza la etapa de entrada por una fuente $plus.minus V_d$ con una llave en serie con el primario, un puente de diodos y un filtro LC. Se debe cumplir $I_o > I_("o,min")$ (veremos por qué).
 
-== Rectificador de salida: qué pasa cuando el primario está abierto
+== Rectificador de salida: conducción con primario abierto
 
 Con el primario *apagado* ($V_(N_1) = 0$), la corriente del inductor $i_L$ debe seguir circulando (no puede cortarse). Con el puente de diodos, la corriente se *reparte en los 4 diodos*: $i_L / 2$ por cada rama.
 
@@ -321,7 +314,7 @@ $ V_(N_2) = v_D - v_D = -v_D + v_D = 0 arrow.r.double V_(N_1) = 0 $
 
 *Tarea de la cátedra:* hacer el rectificador de 2 diodos con transformador de punto medio y repetir el análisis. ¿Tiene el mismo comportamiento?
 
-== Con transformador real: la corriente de magnetización
+== Transformador real y corriente de magnetización
 
 Un transformador real tiene inductancia de magnetización $L_m$ y por ella circula $i_(L_m)$ aunque el primario esté abierto. Vista desde el secundario se llama $i_(L_(m 2))$.
 
@@ -346,7 +339,9 @@ Esta corriente se suma o se resta a la que lleva cada diodo, según su sentido:
   Si $I_o = 10 "A"$ y el ripple del inductor es $Delta i_L = 2 "A"$: $i_("Lmin") = 10 - 1 = 9 "A"$. Entonces la condición $i_("Lmin") / 2 - i_(L_(m 2)) / 2 > 0$ exige $i_(L_(m 2)) < 9 "A"$ para que los cuatro diodos sigan conduciendo.
 ]
 
-== Full Bridge: etapas y ganancia
+== Convertidor Full Bridge
+
+=== Etapas de funcionamiento
 
 Se prenden las llaves *en diagonal*: primero el par $Q_1$ y luego, en el semiciclo siguiente, el par $Q_2$. Etapas:
 
@@ -357,6 +352,8 @@ Se prenden las llaves *en diagonal*: primero el par $Q_1$ y luego, en el semicic
 #imagen[Full Bridge: formas de onda de $V_(N_1)$, $V_(N_2)$, $V_(L_F)$, $i_(L_F)$ e $i_(L_"mag")$]
 
 La corriente de magnetización *sube* con el primario en $+V_d$, se queda *constante* con el primario apagado y *baja* con el primario en $-V_d$: el transformador no se satura porque la tensión media es cero (alterna).
+
+=== Ganancia de tensión y balance de volt-segundo
 
 Aplicando balance de volts-segundo al inductor de filtro $L_F$ (el valor medio de la tensión en un inductor es cero), con $D$ definido por el criterio de la inductancia de filtro:
 
@@ -370,11 +367,14 @@ $ ((N_2) / (N_1) V_d - V_o) D T_"sw" = V_o (1 - D) T_"sw" $
   O sea un transformador $10 : 1$ (por ejemplo, $N_1 = 20$, $N_2 = 2$).
 ]
 
+// (Clase 16)
 // =====================================================================
-= Inverters: aplicaciones (Clase 16)
+= Inversores: aplicaciones
 // =====================================================================
 
 == Motor asincrónico de inducción
+
+=== Principio de funcionamiento y velocidad de sincronismo
 
 El *estator* tiene tres bobinados (fases A, B y C) alimentados con tres corrientes desfasadas $120°$. Eso crea un *campo magnético giratorio*. El *rotor* es una jaula de ardilla que "persigue" ese campo, pero siempre más lento: por eso se llama *asincrónico*.
 
@@ -395,7 +395,7 @@ El *estator* tiene tres bobinados (fases A, B y C) alimentados con tres corrient
   Variando $f$ con el inverter se varía la velocidad del motor.
 ]
 
-== Característica torque-velocidad
+=== Característica torque-velocidad
 
 La curva $T_(e m)$ vs. $omega_r$ tiene una zona prácticamente *lineal* cerca del sincronismo (motor tipo B). Esa es la zona que se usa para *variar velocidad*: el motor trabaja a un deslizamiento chico.
 
@@ -403,7 +403,7 @@ Como la curva se puede correr en frecuencia, con un inverter el motor *puede arr
 
 #imagen[Curva torque-velocidad (Fig. 14-3)]
 
-== Aceleración y punto de equilibrio
+=== Aceleración y punto de equilibrio
 
 $ T_"motor" - T_"resistente" = J dot(omega) $
 
@@ -413,7 +413,7 @@ La suma de torques es igual al momento de inercia por la aceleración angular. E
   Una cinta transportadora que se carga con más peso aumenta $T_"resistente"$. La intersección se desplaza hacia una velocidad algo menor (más deslizamiento), hasta que el motor entrega el nuevo torque.
 ]
 
-== Control $V / f$ constante
+=== Control $V / f$ constante
 
 Si bajamos $f$ pero dejamos $V$ fija, el flujo en el entrehierro $B$ sube y el núcleo se *satura*. El flujo es:
 
@@ -432,7 +432,7 @@ $ B = (integral_0^t V_(L m) dif t) / (N A_"min") = V_"RMS" / (4.44 f N A) $
   En un inverter esto se logra bajando $m_a$ junto con la frecuencia.
 ]
 
-== Carga centrífuga (ventiladores, bombas)
+=== Carga centrífuga (ventiladores, bombas)
 
 En estas cargas, $T_"carga" prop omega^2$. Para que el rotor gire a una cierta velocidad, hay que aplicar la $omega_s$ correspondiente (por ejemplo $omega_(s 3)$ u $omega_(s 2)$ en la figura). Es *la aplicación más común* de los variadores, porque bajar un poco la velocidad ahorra mucha energía.
 
@@ -440,7 +440,7 @@ En estas cargas, $T_"carga" prop omega^2$. Para que el rotor gire a una cierta v
   Si un ventilador baja de 100% a 50% de velocidad, el torque cae a $1/4$ y la potencia (torque × velocidad) a $1/8$ de la inicial.
 ]
 
-== Frenado regenerativo
+=== Frenado regenerativo
 
 Se *baja de golpe* la frecuencia de $f_0$ a $f_1 < f_0$. Para los tiempos de la electrónica, el rotor mantiene su velocidad por inercia, así que ahora $omega_r > omega_(s 1)$: el deslizamiento es negativo y el torque pasa a ser *negativo*, $T_(e m_1) < 0$.
 
