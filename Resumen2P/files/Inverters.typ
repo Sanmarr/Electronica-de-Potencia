@@ -182,7 +182,10 @@ Cada rama se modula con su propia senoidal, desfasadas $120°$ entre sí, pero c
 $ v_(A B) = v_(A N) - v_(B N) $
 
 #figure(
-  image("images/trifasico2.png", width: 90%)
+  image("images/trifasico2.png", width: 90%),
+  caption:[$V_(o,A)("deseado")=V dot sin(ω t)   
+  quad quad 
+  V_(o,A\/B)("deseado") = V dot sin(ω t plus.minus 120°)$]
 ) <fig:trifasico2>
 
 #figure(
