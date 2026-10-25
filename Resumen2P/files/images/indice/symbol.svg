@@ -1,0 +1,310 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    style="font-size: 10pt; overflow: visible;"
+    viewBox="73.5905532836914 -619.7634887695312 255.2252197265625 92.6297607421875"
+>
+    <defs>
+        <symbol id="node_transformer-core_cute">
+            <g
+                fill="none"
+                stroke="#fff
+                "
+                stroke-miterlimit="10"
+                stroke-width=".4"
+            >
+                <path
+                    stroke-linejoin="bevel"
+                    stroke-width="1.06267"
+                    d="M23.86432 23.54513c4.38355 0 7.93704 2.17963 7.93704 4.8684s-3.5535 4.8684-7.93704 4.8684c-2.19165-.00001-3.9683-.88833-3.9683-1.98418 0-1.09581 1.77665-1.98413 3.9683-1.98413 4.38355 0 7.93704 2.17962 7.93704 4.8684s-3.5535 4.86838-7.93704 4.86838c-2.19165 0-3.9683-.88831-3.9683-1.98415s1.77665-1.98415 3.9683-1.98415c4.38355 0 7.93704 2.17963 7.93704 4.8684s-3.5535 4.8684-7.93704 4.8684c-2.19165 0-3.9683-.88834-3.9683-1.98417s1.77665-1.98414 3.9683-1.98414c4.38355 0 7.93704 2.17963 7.93704 4.8684s-3.5535 4.8684-7.93704 4.8684c-2.19165-.00001-3.9683-.88835-3.9683-1.98418s1.77665-1.98413 3.9683-1.98413c4.38355 0 7.93704 2.17962 7.93704 4.8684s-3.5535 4.86838-7.93704 4.86838m32.17244.00009c-4.38356 0-7.93703-2.17963-7.93703-4.8684s3.55347-4.8684 7.93703-4.8684c2.19164.00001 3.9683.88834 3.9683 1.98417s-1.77665 1.98414-3.9683 1.98414c-4.38356 0-7.93703-2.17963-7.93703-4.8684s3.55347-4.8684 7.93703-4.8684c2.19164.00001 3.9683.88834 3.9683 1.98418 0 1.09581-1.77665 1.98413-3.9683 1.98413-4.38356 0-7.93703-2.17962-7.93703-4.8684s3.55347-4.86838 7.93703-4.86838c2.19164-.00001 3.9683.88831 3.9683 1.98415s-1.77665 1.98416-3.9683 1.98416c-4.38356-.00001-7.93703-2.17964-7.93703-4.86841s3.55347-4.86839 7.93703-4.86839c2.19164 0 3.9683.88834 3.9683 1.98416s-1.77665 1.98414-3.9683 1.98414c-4.38356 0-7.93703-2.17963-7.93703-4.8684s3.55347-4.8684 7.93703-4.8684"
+                />
+                <path
+                    stroke-width=".53134"
+                    d="M.26569.26569h23.81115v23.81077m0 31.74816v23.81077h-23.81114m79.36969-79.3697h-23.81115v23.81077m0 31.74816v23.81077h23.81115"
+                />
+                <path
+                    stroke-width="1.06267"
+                    d="M41.9343 59.79295v-39.68482m-3.96752 39.68482v-39.68482"
+                />
+            </g>
+        </symbol>
+        <symbol id="path_full-diode">
+            <g stroke="#fff
+            " stroke-miterlimit="10" stroke-width=".4">
+                <g stroke-width="1.06267">
+                    <path
+                        d="m21.69628 13.75964-21.16492-13.22828v26.45657l21.16492-13.22829"
+                        fill="currentColor"
+                    />
+                    <path fill="none" d="M21.69628 26.98793v-26.45657" />
+                </g>
+            </g>
+        </symbol>
+        <symbol id="path_capacitor">
+            <g stroke="#fff
+            " stroke-miterlimit="10" stroke-width=".4">
+                <path
+                    fill="currentFill"
+                    d="M.53137.53136h10.58246v31.74816h-10.58246Z"
+                    stroke="none"
+                    class="fillable"
+                />
+                <path
+                    fill="none"
+                    stroke-width="1.06267"
+                    d="M.53137.53136v31.74816m10.58243-31.74816v31.74816"
+                />
+            </g>
+        </symbol>
+        <symbol id="path_european-resistor">
+            <g stroke="#fff
+            " stroke-miterlimit="10" stroke-width=".4">
+                <path
+                    fill="currentFill"
+                    stroke-width="1.06267"
+                    d="M.53135.53135h42.33062v15.87407h-42.33062Z"
+                    class="fillable"
+                />
+            </g>
+        </symbol>
+    </defs>
+    <g class="">
+        <use
+            xlink:href="#node_transformer-core_cute"
+            fill="none"
+            stroke="#fff
+            "
+            transform="matrix(1,0,0,1,113.1201367716535,-608.7692482677165)"
+            style="color: #fff
+            ;"
+            class=""
+        />
+    </g>
+    <g class="" style="">
+        <use
+            xlink:href="#path_full-diode"
+            fill="none"
+            stroke="#fff
+            "
+            transform="matrix(0.7,0,0,0.7,220.88150277165352,-618.1354562677166)"
+            style="color: #fff
+            ;"
+        />
+        <line
+            x1="192.7556767716535"
+            y1="-608.5037082677165"
+            x2="221.2534547716535"
+            y2="-608.5037082677165"
+            fill="none"
+            stroke-width="0.5"
+            stroke="#fff
+            "
+        />
+        <line
+            x1="264.56667677165353"
+            y1="-608.5037082677165"
+            x2="236.06889877165352"
+            y2="-608.5037082677165"
+            fill="none"
+            stroke-width="0.5"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="" style="">
+        <use
+            xlink:href="#path_capacitor"
+            fill="none"
+            stroke="#fff
+            "
+            transform="matrix(4.286263797015736e-17,0.7,-0.7,4.286263797015736e-17,276.05048477165354,-574.7840212677166)"
+            style="color: #fff
+            ;"
+        />
+        <line
+            x1="264.56667677165353"
+            y1="-608.5037082677165"
+            x2="264.56667677165353"
+            y2="-574.4120622677167"
+            fill="none"
+            stroke-width="0.5"
+            stroke="#fff
+            "
+        />
+        <line
+            x1="264.56667677165353"
+            y1="-532.9127082677165"
+            x2="264.56667677165353"
+            y2="-567.0043612677166"
+            fill="none"
+            stroke-width="0.5"
+            stroke="#fff
+            "
+        />
+        <g
+            class="pointerNone"
+            transform="matrix(1,0,0,1,281.7197761102362,-570.7082082677166)"
+            fill="#fff
+            "
+        >
+            <g
+                transform="matrix(0.013386719570982407,0,0,0.013386719570982407,0,0)"
+            >
+                <g
+                    stroke="currentColor"
+                    fill="inherit"
+                    stroke-width="0"
+                    transform="scale(1,-1)"
+                >
+                    <g />
+                </g>
+            </g>
+        </g>
+    </g>
+    <g class="">
+        <polyline
+            points="192.7556767716535,-529.1337082677165 264.56667677165353,-529.1337082677165 264.56667677165353,-532.9127082677165"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="" style="">
+        <use
+            xlink:href="#path_european-resistor"
+            fill="none"
+            stroke="#fff
+            "
+            transform="matrix(4.286263797015736e-17,-0.7,0.7,4.286263797015736e-17,315.33197651968504,-551.7416892677164)"
+            style="color: #fff
+            ;"
+        />
+        <line
+            x1="321.25984251968504"
+            y1="-529.1338582677165"
+            x2="321.25984251968504"
+            y2="-552.1136342677164"
+            fill="none"
+            stroke-width="0.5"
+            stroke="#fff
+            "
+        />
+        <line
+            x1="321.25984251968504"
+            y1="-604.7248582677165"
+            x2="321.25984251968504"
+            y2="-581.7450822677164"
+            fill="none"
+            stroke-width="0.5"
+            stroke="#fff
+            "
+        />
+        <g />
+        <g>
+            <g class="pointerNone" fill="#fff
+            ">
+                <g
+                    transform="matrix(0.013386719570982407,0,0,0.013386719570982407,0,0)"
+                >
+                    <g
+                        stroke="currentColor"
+                        fill="inherit"
+                        stroke-width="0"
+                        transform="scale(1,-1)"
+                    >
+                        <g />
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g
+            class="pointerNone"
+            transform="matrix(1,0,0,1,330.97925870783024,-566.9293582677165)"
+            fill="#fff
+            "
+        >
+            <g
+                transform="matrix(0.013386719570982407,0,0,0.013386719570982407,0,0)"
+            >
+                <g
+                    stroke="currentColor"
+                    fill="inherit"
+                    stroke-width="0"
+                    transform="scale(1,-1)"
+                >
+                    <g />
+                </g>
+            </g>
+        </g>
+    </g>
+    <g class="">
+        <polyline
+            points="283.4648425196851,-529.1338582677165 321.25984251968504,-529.1338582677165 321.25984251968504,-532.9128582677165"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="264.56667677165353,-608.5037082677165 302.3616767716535,-608.5037082677165"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="113.38567677165351,-608.5037082677165 75.5906767716535,-608.5037082677165"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="113.38582677165354,-529.1338582677165 75.59055118110236,-529.1338582677165"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="264.56692913385825,-529.1338582677165 283.4645669291338,-529.1338582677165"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="302.3616767716535,-608.5037082677165 321.25984251968504,-608.5037082677165 321.25984251968504,-604.7244094488188"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#fff
+            "
+        />
+    </g>
+</svg>

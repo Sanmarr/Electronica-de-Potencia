@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La rama del inverter: Buck + Boost</title>
+<style>
+:root{--bg:#fff;--fg:#1c2330;--mut:#5b6573;--card:#f3f6fa;--line:#c9d2de;--blue:#1f5fa8;--green:#2e7d32;--gbg:#d8efd9;--red:#c62828;--org:#e65100;--wire:#2b3340;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--fg:#e7ebf1;--mut:#9aa6b5;--card:#1d222a;--line:#343c49;--blue:#6aa8ee;--green:#6fcf76;--gbg:#1f3a22;--red:#ff7a72;--org:#ffa052;--wire:#c8d0dc;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171c;--fg:#e7ebf1;--mut:#9aa6b5;--card:#1d222a;--line:#343c49;--blue:#6aa8ee;--green:#6fcf76;--gbg:#1f3a22;--red:#ff7a72;--org:#ffa052;--wire:#c8d0dc;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;color:var(--blue);margin:.2em 0}
+h2{font-size:1.2rem;color:var(--blue);border-bottom:2px solid var(--blue);padding-bottom:3px;margin-top:1.8em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.key{border-left:4px solid var(--org)}
+.bad{border-left:4px solid var(--red)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+button{font:inherit;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer}
+button.act{background:var(--blue);color:#fff;border-color:var(--blue)}
+label{color:var(--mut);font-size:.9rem}
+svg{width:100%;height:auto;max-width:560px;display:block;margin:auto}
+svg .w{stroke:var(--wire);stroke-width:2;fill:none}
+svg text{fill:var(--fg);font:13px system-ui,sans-serif}
+svg .mut{fill:var(--mut);font-size:11px}
+svg g.q rect,svg g.d polygon{fill:var(--bg);stroke:var(--wire);stroke-width:2}
+svg g.d line{stroke:var(--wire);stroke-width:2}
+svg g.on rect{fill:var(--gbg)}
+svg g.hot rect,svg g.hot polygon{stroke:var(--org);stroke-width:3.5}
+svg g.hot line{stroke:var(--org);stroke-width:3.5}
+svg g.err rect{stroke:var(--red);stroke-width:3.5;fill:var(--bg)}
+.flow{fill:none;stroke:var(--org);stroke-width:4;stroke-dasharray:7 9;opacity:.9;animation:mv .8s linear infinite}
+@keyframes mv{to{stroke-dashoffset:-16}}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+.sc{overflow-x:auto}
+th,td{border:1px solid var(--line);padding:4px 6px;text-align:center}
+th{background:var(--card)}
+tr.rw{cursor:pointer}
+tr.rw:hover,tr.sel{background:var(--gbg)}
+tr.forb{color:var(--red)}
+.big{font-size:1.05rem}
+canvas{width:100%;height:330px;display:block}
+code{background:var(--card);padding:1px 5px;border-radius:4px}
+.up{color:var(--green);font-weight:600}.dn{color:var(--red);font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>La rama del inverter = Buck + Boost</h1>
+<p>Un inverter se arma con “ramas”. Esta página te muestra qué es una rama, por qué es un Buck y un Boost a la vez, y cuánto vale la tensión en el inductor (<code>V<sub>L</sub></code>) en cada estado posible.</p>
+
+<h2>1. La idea en 30 segundos</h2>
+<div class="card">
+<p><b>Buck:</b> un transistor en serie con la fuente y un diodo a masa. La energía va de <code>V<sub>d</sub></code> a <code>V<sub>o</sub></code>.<br>
+<b>Boost:</b> un transistor a masa y un diodo hacia la fuente. La energía va de <code>V<sub>o</sub></code> a <code>V<sub>d</sub></code> (acá el lado de mayor tensión es <code>V<sub>d</sub></code>).</p>
+<p>Si los dibujás juntos con <b>el mismo inductor</b>, el diodo del Buck cae justo en el lugar del transistor del Boost, y viceversa. Resultado: dos transistores en serie, cada uno con su diodo en antiparalelo, y el punto medio <code>v<sub>a</sub></code> conectado al inductor. Eso es una <b>rama</b>.</p>
+</div>
+<div class="card key"><b>Idea clave:</b> el punto medio <code>v<sub>a</sub></code> solo puede valer <b>0</b> o <b>V<sub>d</sub></b>. Y el inductor siempre ve <code>V<sub>L</sub> = v<sub>a</sub> − V<sub>o</sub></code>. Todo lo demás (Buck, Boost, quién conduce) es consecuencia del sentido de la corriente <code>i<sub>L</sub></code>.</div>
+
+<h2>2. Probalo: elegí los interruptores y el sentido de la corriente</h2>
+<div class="card">
+<div class="row"><b>Q1:</b><button id="b1on">ON</button><button id="b1off">OFF</button>
+<b style="margin-left:10px">Q2:</b><button id="b2on">ON</button><button id="b2off">OFF</button></div>
+<div class="row"><b>iL:</b><button id="dp">positiva (→ carga)</button><button id="dn">negativa (← carga)</button></div>
+<div class="row"><label>V<sub>d</sub> = <span id="vdv">300</span> V <input id="vd" type="range" min="100" max="400" step="10" value="300"></label>
+<label>V<sub>o</sub> = <span id="vov">150</span> V <input id="vo" type="range" min="20" max="380" step="10" value="150"></label></div>
+<div class="row"><b>Medir V<sub>L</sub>:</b><button id="c0">siempre igual (v<sub>a</sub> − V<sub>o</sub>)</button><button id="c1">como en la clase (según iL)</button></div>
+
+<svg viewBox="0 0 460 290" role="img" aria-label="Circuito de una rama de inverter">
+<polyline class="w" points="40,40 250,40"/><polyline class="w" points="40,260 400,260"/>
+<line class="w" x1="40" y1="40" x2="40" y2="140"/><line class="w" x1="40" y1="160" x2="40" y2="260"/>
+<line class="w" x1="26" y1="140" x2="54" y2="140" style="stroke-width:3"/><line class="w" x1="32" y1="150" x2="48" y2="150" style="stroke-width:3"/>
+<text x="6" y="100">Vd</text><text x="46" y="36" class="mut">+</text><text x="46" y="256" class="mut">−</text>
+<line class="w" x1="190" y1="40" x2="190" y2="70"/><line class="w" x1="190" y1="120" x2="190" y2="150"/>
+<g class="q" id="Q1b"><rect x="170" y="70" width="40" height="50" rx="4"/><text x="180" y="100">Q1</text></g>
+<line class="w" x1="250" y1="40" x2="250" y2="83"/><line class="w" x1="250" y1="105" x2="250" y2="150"/>
+<g class="d" id="D1g"><polygon points="240,105 260,105 250,86"/><line x1="240" y1="83" x2="260" y2="83"/></g>
+<text x="262" y="100" class="mut">D1</text>
+<line class="w" x1="190" y1="150" x2="290" y2="150"/><line class="w" x1="250" y1="150" x2="250" y2="193"/>
+<circle cx="190" cy="150" r="3.5" fill="var(--wire)"/><circle cx="250" cy="150" r="3.5" fill="var(--wire)"/>
+<line class="w" x1="190" y1="150" x2="190" y2="180"/><line class="w" x1="190" y1="230" x2="190" y2="260"/>
+<g class="q" id="Q2b"><rect x="170" y="180" width="40" height="50" rx="4"/><text x="180" y="210">Q2</text></g>
+<line class="w" x1="250" y1="215" x2="250" y2="260"/>
+<g class="d" id="D2g"><polygon points="240,215 260,215 250,196"/><line x1="240" y1="193" x2="260" y2="193"/></g>
+<text x="262" y="210" class="mut">D2</text>
+<path class="w" d="M290 150 q5 -15 10 0 q5 -15 10 0 q5 -15 10 0 q5 -15 10 0"/><line class="w" x1="330" y1="150" x2="400" y2="150"/>
+<text x="305" y="128">L</text>
+<line x1="296" y1="118" x2="324" y2="118" stroke="var(--blue)" stroke-width="2"/><polygon points="324,114 332,118 324,122" fill="var(--blue)"/><text x="296" y="110" class="mut" style="fill:var(--blue)">iL (ref.)</text>
+<text x="284" y="177" style="fill:var(--blue)">+</text><line x1="294" y1="171" x2="330" y2="171" stroke="var(--blue)" stroke-width="1.5"/><text x="334" y="177" style="fill:var(--blue)">−</text><text x="300" y="190" style="fill:var(--blue)">VL</text>
+<line class="w" x1="360" y1="150" x2="360" y2="195"/><line class="w" x1="348" y1="195" x2="372" y2="195" style="stroke-width:3"/><line class="w" x1="348" y1="205" x2="372" y2="205" style="stroke-width:3"/><line class="w" x1="360" y1="205" x2="360" y2="260"/>
+<line class="w" x1="400" y1="150" x2="400" y2="185"/><rect class="w" x="392" y="185" width="16" height="50"/><line class="w" x1="400" y1="235" x2="400" y2="260"/>
+<text x="414" y="215">Vo</text>
+<text id="vaT" x="198" y="143" style="fill:var(--org);font-weight:700">va</text>
+<polyline id="cur" class="flow" points=""/>
+</svg>
+<div id="info" class="card big"></div>
+</div>
+
+<h2>3. Todos los estados posibles</h2>
+<p>Tocá una fila para verla en el circuito. <code>V<sub>L</sub></code> se calcula con los valores de <code>V<sub>d</sub></code> y <code>V<sub>o</sub></code> de arriba.</p>
+<div class="sc"><table id="tb"></table></div>
+<div class="card key"><b>Cómo se “toma” V<sub>L</sub>:</b> el inductor está entre <code>v<sub>a</sub></code> (lado +) y <code>V<sub>o</sub></code> (lado −), así que siempre <code>V<sub>L</sub> = v<sub>a</sub> − V<sub>o</sub></code>, y la corriente cambia como <code>di/dt = V<sub>L</sub>/L</code>.<br>
+En la clase, para el Boost, se mide <code>V<sub>L</sub></code> en el sentido de la corriente (que va hacia la izquierda). Por eso allí aparece <code>V<sub>o</sub></code> y <code>V<sub>o</sub> − V<sub>d</sub></code>, que son los valores de la columna “V<sub>L</sub> (clase)”. En las filas con i<sub>L</sub> negativa tienen el signo opuesto al de la columna fija. Es la misma física con otra convención de signos.</div>
+
+<h2>4. Qué pasa en el tiempo (ciclo de trabajo D de Q1)</h2>
+<div class="card">
+<div class="row"><label>D = <span id="dv">60</span> % <input id="D" type="range" min="0" max="100" step="5" value="60"></label></div>
+<canvas id="cv"></canvas>
+<div id="avg"></div>
+<p style="color:var(--mut);font-size:.9rem;margin:6px 0 0">Se usa Q1 y Q2 de forma complementaria (sin tiempo muerto). El valor medio de <code>v<sub>a</sub></code> es <code>D·V<sub>d</sub></code>: si es mayor que <code>V<sub>o</sub></code>, <code>i<sub>L</sub></code> sube; si es menor, baja. En un circuito real <code>V<sub>o</sub></code> se ajusta (o el control corrige <code>D</code>) hasta que el valor medio de <code>V<sub>L</sub></code> sea cero.</p>
+</div>
+
+<h2>5. Para llevarte</h2>
+<div class="card">
+<ul>
+<li>La rama = Buck + Boost con el mismo inductor y el punto medio <code>v<sub>a</sub></code>.</li>
+<li><code>v<sub>a</sub></code> vale <b>V<sub>d</sub></b> (arriba) o <b>0</b> (abajo). Siempre, aunque cambie quién conduce.</li>
+<li><code>V<sub>L</sub> = v<sub>a</sub> − V<sub>o</sub></code>: si <code>v<sub>a</sub> = V<sub>d</sub></code> es positiva, si <code>v<sub>a</sub> = 0</code> es <code>−V<sub>o</sub></code>.</li>
+<li>El sentido de <code>i<sub>L</sub></code> decide <b>quién conduce</b> (transistor o diodo) y la <b>dirección de la energía</b>, pero no cambia <code>v<sub>a</sub></code>.</li>
+<li>Con ambas llaves apagadas el diodo lo decide la corriente; ambas encendidas es un cortocircuito (shoot-through).</li>
+</ul>
+</div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const S={q1:1,q2:0,dir:1,conv:0,Vd:300,Vo:150};
+const PA={
+ A:[[40,100],[40,40],[190,40],[190,150],[400,150],[400,260],[40,260],[40,100]],
+ B:[[40,100],[40,260],[400,260],[400,150],[190,150],[190,40],[40,40],[40,100]],
+ C:[[40,100],[40,260],[400,260],[400,150],[250,150],[250,40],[40,40],[40,100]],
+ D:[[400,150],[190,150],[190,260],[400,260],[400,150]],
+ E:[[190,260],[190,150],[400,150],[400,260],[190,260]],
+ F:[[250,260],[250,150],[400,150],[400,260],[250,260]]
+};
+const f=v=>(v>0?"+":v<0?"−":"")+Math.abs(v)+" V";
+function calc(q1,q2,dir,Vd,Vo){
+ if(q1&&q2)return{bad:1,title:"Q1 y Q2 encendidos a la vez",desc:"Cortocircuito de la fuente Vd a través de la rama (shoot-through). Se evita con un tiempo muerto entre una conmutación y otra.",va:null};
+ let va,p,el,t,d;
+ if(q1){va=Vd;
+  if(dir>0){p="A";el="Q1";t="Q1 conduce (efecto Buck, carga del inductor)";d="La corriente sale de Vd, pasa por Q1 y va a la carga. Vd entrega energía.";}
+  else{p="B";el="Q1";t="Q1 conduce en sentido inverso (o su diodo D1)";d="iL es negativa: la corriente vuelve hacia Vd. El inductor devuelve energía a la fuente.";}
+ }else if(q2){va=0;
+  if(dir<0){p="D";el="Q2";t="Q2 conduce (efecto Boost, carga del inductor)";d="La corriente baja por Q2 a masa. El inductor se carga desde Vo; Vd no interviene.";}
+  else{p="E";el="Q2";t="Q2 conduce en sentido inverso (o su diodo D2)";d="iL es positiva y recircula por abajo: el inductor entrega su energía a la carga.";}
+ }else{
+  if(dir>0){va=0;p="F";el="D2";t="D2 conduce (rueda libre del Buck)";d="La corriente del inductor no puede cortarse: enciende D2 y fuerza va = 0. El inductor descarga su energía en la carga.";}
+  else{va=Vd;p="C";el="D1";t="D1 conduce (el Boost entrega a Vd)";d="La corriente del inductor enciende D1 y fuerza va = Vd. La energía vuelve a la fuente Vd.";}
+ }
+ const VL=va-Vo,VLc=dir*VL;
+ return{va,VL,VLc,p,el,title:t,desc:d,dir};
+}
+function evo(r,dir){return r.VL>0?"iL sube":r.VL<0?"iL baja":"iL constante"}
+function render(){
+ const r=calc(S.q1,S.q2,S.dir,S.Vd,S.Vo);
+ ["Q1b","Q2b","D1g","D2g"].forEach(i=>{$(i).classList.remove("hot","err")});
+ $("Q1b").classList.toggle("on",!!S.q1);$("Q2b").classList.toggle("on",!!S.q2);
+ ["b1on","b1off","b2on","b2off","dp","dn","c0","c1"].forEach(i=>$(i).classList.remove("act"));
+ $(S.q1?"b1on":"b1off").classList.add("act");$(S.q2?"b2on":"b2off").classList.add("act");
+ $(S.dir>0?"dp":"dn").classList.add("act");$(S.conv?"c1":"c0").classList.add("act");
+ const inf=$("info");
+ if(r.bad){$("Q1b").classList.add("err");$("Q2b").classList.add("err");$("cur").setAttribute("points","");$("vaT").textContent="";
+  inf.className="card big bad";inf.innerHTML="<b>¡Prohibido!</b> "+r.title+".<br>"+r.desc;rows();return;}
+ inf.className="card big";
+ $({Q1:"Q1b",Q2:"Q2b",D1:"D1g",D2:"D2g"}[r.el]).classList.add("hot");
+ $("cur").setAttribute("points",PA[r.p].map(a=>a.join(",")).join(" "));
+ $("vaT").textContent="va = "+(r.va?S.Vd+" V":"0 V");
+ let eq;
+ if(!S.conv)eq="VL = va − Vo = "+r.va+" − "+S.Vo+" = <b>"+f(r.VL)+"</b>";
+ else if(S.dir>0)eq="iL positiva, se mide igual: VL = va − Vo = "+r.va+" − "+S.Vo+" = <b>"+f(r.VLc)+"</b>";
+ else eq="iL negativa, se mide en el sentido de la corriente: VL = Vo − va = "+S.Vo+" − "+r.va+" = <b>"+f(r.VLc)+"</b>";
+ inf.innerHTML="<b>"+r.title+"</b><br>"+r.desc+"<br><br>va = <b>"+(r.va?"Vd":"0")+"</b> → "+eq+"<br>Como di/dt = VL/L (con VL fija = "+f(r.VL)+"): <span class=\""+(r.VL>0?"up":"dn")+"\">"+evo(r)+"</span>"+(r.VL*S.dir<0?" (su módulo disminuye)":" (su módulo aumenta)")+".";
+ rows();
+}
+const ST=[[1,0,1],[1,0,-1],[0,1,-1],[0,1,1],[0,0,1],[0,0,-1],[1,1,1]];
+function rows(){
+ let h="<tr><th>Q1</th><th>Q2</th><th>iL</th><th>Conduce</th><th>va</th><th>VL (fija)</th><th>VL (clase)</th><th>Efecto</th></tr>";
+ ST.forEach((s,i)=>{const r=calc(s[0],s[1],s[2],S.Vd,S.Vo);const sel=(s[0]==S.q1&&s[1]==S.q2&&(s[2]==S.dir||(s[0]&&s[1])));
+  if(r.bad){h+="<tr class=\"rw forb"+(sel?" sel":"")+"\" data-i=\""+i+"\"><td>ON</td><td>ON</td><td>—</td><td colspan=\"5\">PROHIBIDO: shoot-through</td></tr>";return;}
+  h+="<tr class=\"rw"+(sel?" sel":"")+"\" data-i=\""+i+"\"><td>"+(s[0]?"ON":"OFF")+"</td><td>"+(s[1]?"ON":"OFF")+"</td><td>"+(s[2]>0?"+":"−")+"</td><td>"+r.el+"</td><td>"+(r.va?"Vd":"0")+"</td><td>"+f(r.VL)+"</td><td>"+f(r.VLc)+"</td><td>"+evo(r)+"</td></tr>";});
+ $("tb").innerHTML=h;
+ $("tb").querySelectorAll("tr.rw").forEach(tr=>tr.onclick=()=>{const s=ST[tr.dataset.i];S.q1=s[0];S.q2=s[1];S.dir=s[2];render();});
+}
+$("b1on").onclick=()=>{S.q1=1;render()};$("b1off").onclick=()=>{S.q1=0;render()};
+$("b2on").onclick=()=>{S.q2=1;render()};$("b2off").onclick=()=>{S.q2=0;render()};
+$("dp").onclick=()=>{S.dir=1;render()};$("dn").onclick=()=>{S.dir=-1;render()};
+$("c0").onclick=()=>{S.conv=0;render()};$("c1").onclick=()=>{S.conv=1;render()};
+$("vd").oninput=e=>{S.Vd=+e.target.value;$("vdv").textContent=S.Vd;render();draw()};
+$("vo").oninput=e=>{S.Vo=+e.target.value;$("vov").textContent=S.Vo;render();draw()};
+$("D").oninput=e=>{$("dv").textContent=e.target.value;draw()};
+
+function draw(){
+ const cv=$("cv"),dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+ cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext("2d");c.scale(dpr,dpr);
+ const cs=getComputedStyle(document.documentElement),col=n=>cs.getPropertyValue(n).trim();
+ const D=$("D").value/100,Vd=S.Vd,Vo=S.Vo,N=800,np=4,dt=np/N;
+ let i=0,va=[],vl=[],il=[];
+ for(let k=0;k<N;k++){const v=((k*dt)%1)<D?Vd:0;va.push(v);vl.push(v-Vo);il.push(i);i+=(v-Vo)*dt;}
+ const ph=H/3,L=46;
+ function panel(y0,arr,lo,hi,color,name){
+  c.strokeStyle=col("--line");c.lineWidth=1;c.strokeRect(L,y0+8,W-L-6,ph-22);
+  const y=v=>y0+8+(ph-22)*(1-(v-lo)/(hi-lo)),x=k=>L+(W-L-6)*k/N;
+  if(lo<0&&hi>0){c.setLineDash([4,4]);c.beginPath();c.moveTo(L,y(0));c.lineTo(W-6,y(0));c.stroke();c.setLineDash([]);}
+  c.strokeStyle=color;c.lineWidth=2.2;c.beginPath();arr.forEach((v,k)=>k?c.lineTo(x(k),y(v)):c.moveTo(x(k),y(v)));c.stroke();
+  c.fillStyle=col("--fg");c.font="12px system-ui,sans-serif";c.fillText(name,4,y0+ph/2);
+ }
+ panel(0,va,-Vd*.1,Vd*1.15,col("--blue"),"va");
+ panel(ph,vl,Math.min(-Vo,Vd-Vo,0)*1.2-5,Math.max(Vd-Vo,0,-Vo)*1.2+5,col("--org"),"VL");
+ const m=Math.max(1,...il.map(Math.abs))*1.2;panel(2*ph,il,-m,m,col("--green"),"iL");
+ const a=D*Vd-Vo;
+ $("avg").innerHTML="Valor medio de VL: D·Vd − Vo = "+D.toFixed(2)+"·"+Vd+" − "+Vo+" = <b>"+f(Math.round(a))+"</b> → "+(a>0?"<span class=\"up\">iL sube de a poco</span>":a<0?"<span class=\"dn\">iL baja de a poco</span>":"<b>iL oscila alrededor de un valor fijo</b>")+".";
+}
+render();draw();addEventListener("resize",draw);
+</script>
+</body>
+</html>
