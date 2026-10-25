@@ -60,43 +60,53 @@ $ p(t) = underbrace(V I cos phi, P) [1 - cos(2 omega t)] - underbrace(V I sin ph
   - *$Q$ (potencia reactiva):* amplitud de la senoidal de *valor medio nulo*. Va y vuelve entre fuente y carga sin consumirse.
 ]
 
-#imagen[$v(t)$, $i(t)$ y $p(t)$ con sus componentes $P$ y $Q$]
+//#imagen[$v(t)$, $i(t)$ y $p(t)$ con sus componentes $P$ y $Q$]
 
-#ejemplo[
-  $V = 220 "V"$, $I = 10 "A"$, $phi = 30°$:
-  - $P = 220 dot 10 dot cos 30° approx 1905 "W"$
-  - $Q = 220 dot 10 dot sin 30° = 1100 "VAr"$
-]
 
 == Fasores y potencia aparente
 
 Se representan tensión y corriente como números complejos (fasores) con su módulo y su fase:
 
-$ overline(V) = V e^(j phi_V) quad quad overline(I) = I e^(j phi_I) $
+$ overline(V) = hat(V) dot e^(j phi_V) quad quad overline(I) = hat(I) dot e^(j phi_I) $
 
 La *potencia aparente* compleja reúne $P$ y $Q$ en un solo número:
 
-$ overline(S) = V I cos(phi_V - phi_I) + j V I sin(phi_V - phi_I) = P + j Q $
+$ overline(S) = hat(V) hat(I) dot cos(phi_V - phi_I) + j dot hat(V) hat(I) dot sin(phi_V - phi_I) = P + j Q $
 
-#imagen[Triángulo de potencias: $P$ en el eje real, $j Q$ en el imaginario y $S$ como hipotenusa]
+//#imagen[Triángulo de potencias: $P$ en el eje real, $j Q$ en el imaginario y $S$ como hipotenusa]
+
+#figure(
+  image("images/triang.png", width: 30%)
+) <fig:triang>
 
 El *factor de potencia* mide qué fracción de la potencia aparente se aprovecha como activa:
 
 $ "PF" = cos phi = P / S $
 
+/*
 #ejemplo[
   Con $P = 1905 "W"$ y $Q = 1100 "VAr"$: $S = sqrt(1905^2 + 1100^2) approx 2200 "VA"$ y $"PF" = 1905 / 2200 approx 0.87$.
 ]
-
+*/
 // =====================================================================
 = Sistema trifásico
 // =====================================================================
 
 Tres tensiones y tres corrientes de igual amplitud, desfasadas $120°$ ($2 pi / 3$) entre sí:
 
-$ v_a = sqrt(2) V sin(omega t) \ v_b = sqrt(2) V sin(omega t - 2 pi / 3) \ v_c = sqrt(2) V sin(omega t + 2 pi / 3) $
-
-$ i_a = sqrt(2) I sin(omega t - phi) \ i_b = sqrt(2) I sin(omega t - phi - 2 pi / 3) \ i_c = sqrt(2) I sin(omega t - phi + 2 pi / 3) $
+#grid(
+  columns: (1fr, 1fr),
+  [
+    $ v_a &= sqrt(2) V sin(omega t) \ 
+      v_b &= sqrt(2) V sin(omega t - 2 pi / 3) \ 
+      v_c &= sqrt(2) V sin(omega t + 2 pi / 3) $
+  ],
+  [
+    $ i_a &= sqrt(2) I sin(omega t - phi) \ 
+      i_b &= sqrt(2) I sin(omega t - phi - 2 pi / 3) \ 
+      i_c &= sqrt(2) I sin(omega t - phi + 2 pi / 3) $
+  ],
+)
 
 Sumando la potencia de las tres fases, cada una tiene un término oscilante a $2 omega$, pero desfasados $4 pi / 3$ entre sí:
 
@@ -120,7 +130,7 @@ $ bold(x)_(alpha beta 0)(t) = bold(T) bold(x)_(a b c)(t) = 2/3 mat(
   1, -1/2, -1/2;
   0, sqrt(3)/2, -sqrt(3)/2;
   1/2, 1/2, 1/2;
-) vec(x_a (t), x_b (t), x_c (t)) $
+) dot vec(x_a (t), x_b (t), x_c (t)) $
 
 #idea[
   - Si $x_a + x_b + x_c = 0$ (sistema equilibrado sin componente homopolar) → $x_0 = 0$.
@@ -130,6 +140,8 @@ $ bold(x)_(alpha beta 0)(t) = bold(T) bold(x)_(a b c)(t) = 2/3 mat(
 ]
 
 #imagen[Ejes $a$, $b$, $c$ a $120°$ y ejes ortogonales $alpha$, $beta$]
+
+
 
 #ejemplo[
   Tensiones con pico $311 "V"$ (220 V eficaces) en el instante $omega t = 90°$:
@@ -146,11 +158,15 @@ $ bold(x)_(alpha beta 0)(t) = bold(T) bold(x)_(a b c)(t) = 2/3 mat(
 
 El VSI trifásico tiene tres ramas ($a$, $b$, $c$), cada una con un interruptor superior $g_x$ y uno inferior $overline(g_x)$ (complementario), alimentadas por $v_(d c)$. Cada $g_x$ es un IGBT con su diodo en antiparalelo. El nodo $o$ es el negativo del bus y $n$ el neutro de la carga.
 
-#imagen[VSI trifásico con interruptores $g_1$, $g_2$, $g_3$ y sus complementarios, carga conectada en estrella]
+//#imagen[VSI trifásico con interruptores $g_1$, $g_2$, $g_3$ y sus complementarios, carga conectada en estrella]
+
+#figure(
+  image("images/vsi.png", width: 60%)
+) <fig:vsi>
 
 La tensión de cada rama respecto del nodo $o$ solo puede ser *$0$ o $v_(d c)$*:
 
-$ vec(v_(a o), v_(b o), v_(c o)) = bold(g) v_(d c) quad "con" quad bold(g) = [g_1 quad g_2 quad g_3]^T quad (g_x in {0, 1}) $
+$ vec(v_(a o), v_(b o), v_(c o)) = bold(g) dot v_(d c) quad "con" quad bold(g) = [g_1 quad g_2 quad g_3]^T quad (g_x in {0, 1}) $
 
 Con tres interruptores hay $2^3 = 8$ combinaciones posibles (8 estados).
 
@@ -168,15 +184,24 @@ Con tres interruptores hay $2^3 = 8$ combinaciones posibles (8 estados).
 
 Tres referencias senoidales ($v_("ref"_a)$, $v_("ref"_b)$, $v_("ref"_c)$) se *comparan con una misma triangular*. Si la referencia es mayor que la triangular, el interruptor superior de esa rama se enciende (g = 1); si no, se apaga (g = 0). Esas señales $bold(g)$ comandan al VSI.
 
-#imagen[Diagrama de bloques VSI-SPWM: referencias, triangular, comparador y VSI]
+#figure(
+  image("images/vsi2.png", width: 40%)
+) <fig:vsi2>
 
-#imagen[Forma de onda de $v_(a n)$ con SPWM en un período (50 Hz)]
+//#imagen[Diagrama de bloques VSI-SPWM: referencias, triangular, comparador y VSI]
+
+//#imagen[Forma de onda de $v_(a n)$ con SPWM en un período (50 Hz)]
+
+#figure(
+  image("images/vsi3.png", width: 60%),
+  caption: [Forma de onda de $v_(a n)$ con SPWM en un período (50 Hz)]
+) <fig:vsi3>
 
 Los niveles posibles son:
 
 #table(
   columns: (auto, 1fr),
-  inset: 4pt, stroke: 0.5pt + gray, align: (left, left),
+  inset: 8pt, stroke: 0.5pt + gray, align: (left, left),
   fill: (x, y) => if y == 0 { azul.lighten(80%) },
   [*Tensión*], [*Valores que puede tomar*],
   [Fase ($v_(a n)$)], [$-2/3 v_(d c)$, $-1/3 v_(d c)$, $0$, $1/3 v_(d c)$, $2/3 v_(d c)$],
@@ -188,6 +213,7 @@ Los niveles posibles son:
 #definicion[
   Con índice de modulación $m_a$ (en zona lineal, $m_a <= 1$):
   - Tensión de rama: $v_(a o, b o, o n) = 1/2 m_a v_(d c)$
+
   - Tensión de línea: $v_(a b, b c, c a) = sqrt(3)/2 m_a v_(d c)$
 
   Para generar una tensión de salida de *pico $V$* hace falta un bus de continua de al menos:
@@ -201,9 +227,9 @@ Los niveles posibles son:
 ]
 
 #importante[
-  Pregunta de la clase: _¿qué sucede si rectifico la tensión de entrada y con eso vuelvo a generar la trifásica?_
+   _¿Qué sucede si rectifico la tensión de entrada y con eso vuelvo a generar la trifásica?_
 
-  Respuesta (resolución propia, no está en las diapositivas): al rectificar una red de $380 "V"$ de línea se obtiene un bus de unos $1.35 dot 380 approx 513 "V"$, que es menor que los $622 "V"$ del ejemplo anterior. Con SPWM en zona lineal solo se llega a unos $314 "V"$ eficaces de línea. *El inversor no puede devolver la misma tensión que entró*; solo puede generar una menor (o igual con sobremodulación). Esto motiva las técnicas siguientes, que aprovechan mejor el bus.
+  Al rectificar una red de $380 "V"$ de línea se obtiene un bus de unos $1.35 dot 380 approx 513 "V"$, que es menor que los $622 "V"$ del ejemplo anterior. Con SPWM en zona lineal solo se llega a unos $314 "V"$ eficaces de línea. *El inversor no puede devolver la misma tensión que entró*; solo puede generar una menor (o igual con sobremodulación). Esto motiva las técnicas siguientes, que aprovechan mejor el bus.
 ]
 
 // =====================================================================
@@ -212,21 +238,30 @@ Los niveles posibles son:
 
 Aplicando Clarke a las tensiones de cada uno de los 8 estados se obtiene un vector en el plano $alpha beta$:
 
+
 #table(
-  columns: 9,
-  inset: 3.5pt, stroke: 0.4pt + gray, align: center + horizon,
+  columns: 10,
+  inset: 8pt, stroke: 0.4pt + gray, align: center + horizon,
   fill: (x, y) => if y == 0 { azul.lighten(80%) },
   text(size: 8pt)[*Est.*], text(size: 8pt)[*Vector*], [$g_1$], [$g_2$], [$g_3$],
-  [$v_(a b)$], [$v_(b c)$], [$v_(c a)$], [$v_(alpha beta) / v_(d c)$],
-  [\#0], [$bold(v)_0$], [0], [0], [0], [0], [0], [0], [0 (cero)],
-  [\#1], [$bold(v)_1$], [1], [0], [0], [$v_(d c)$], [0], [$-v_(d c)$], [$2/3$ ($0°$)],
-  [\#2], [$bold(v)_2$], [1], [1], [0], [0], [$v_(d c)$], [$-v_(d c)$], [$1/3 + j sqrt(3)/3$ ($60°$)],
-  [\#3], [$bold(v)_3$], [0], [1], [0], [$-v_(d c)$], [$v_(d c)$], [0], [$-1/3 + j sqrt(3)/3$ ($120°$)],
-  [\#4], [$bold(v)_4$], [0], [1], [1], [$-v_(d c)$], [0], [$v_(d c)$], [$-2/3$ ($180°$)],
-  [\#5], [$bold(v)_5$], [0], [0], [1], [0], [$-v_(d c)$], [$v_(d c)$], [$-1/3 - j sqrt(3)/3$ ($240°$)],
-  [\#6], [$bold(v)_6$], [1], [0], [1], [$v_(d c)$], [$-v_(d c)$], [0], [$1/3 - j sqrt(3)/3$ ($300°$)],
-  [\#7], [$bold(v)_7$], [1], [1], [1], [0], [0], [0], [0 (cero)],
+  [$v_(a b)$], [$v_(b c)$], [$v_(c a)$], [$v_(alpha beta) / v_(d c)$], text(size: 8pt)[*Ángulo*],
+  [\#0], [$bold(v)_0$], [0], [0], [0], [0], [0], [0], [0], [—],
+  [\#1], [$bold(v)_1$], [1], [0], [0], [$v_(d c)$], [0], [$-v_(d c)$], [$2/3$], [$0°$],
+  [\#2], [$bold(v)_2$], [1], [1], [0], [0], [$v_(d c)$], [$-v_(d c)$], [$1/3 + j sqrt(3)/3$], [$60°$],
+  [\#3], [$bold(v)_3$], [0], [1], [0], [$-v_(d c)$], [$v_(d c)$], [0], [$-1/3 + j sqrt(3)/3$], [$120°$],
+  [\#4], [$bold(v)_4$], [0], [1], [1], [$-v_(d c)$], [0], [$v_(d c)$], [$-2/3$], [$180°$],
+  [\#5], [$bold(v)_5$], [0], [0], [1], [0], [$-v_(d c)$], [$v_(d c)$], [$-1/3 - j sqrt(3)/3$], [$240°$],
+  [\#6], [$bold(v)_6$], [1], [0], [1], [$v_(d c)$], [$-v_(d c)$], [0], [$1/3 - j sqrt(3)/3$], [$300°$],
+  [\#7], [$bold(v)_7$], [1], [1], [1], [0], [0], [0], [0 ], [—],
 )
+
+
+//#imagen[Hexágono en $alpha beta$ con $bold(v)_1$ a $bold(v)_6$, $bold(v)_(0,7)$ en el centro y los 6 sectores]
+
+#figure(
+  image("images/vsi4.png", width: 70%)
+) <fig:vsi4>
+
 
 #idea[
   - Los estados *\#1 a \#6* dan seis vectores *activos* de módulo $2/3 v_(d c)$, separados $60°$. Forman los vértices de un *hexágono* de radio $2/3 v_(d c)$.
@@ -234,7 +269,6 @@ Aplicando Clarke a las tensiones de cada uno de los 8 estados se obtiene un vect
   - El plano se divide en *6 sectores* de $60°$: el sector $k$ está entre $bold(v)_k$ y $bold(v)_(k+1)$ (el sector 6 entre $bold(v)_6$ y $bold(v)_1$).
 ]
 
-#imagen[Hexágono en $alpha beta$ con $bold(v)_1$ a $bold(v)_6$, $bold(v)_(0,7)$ en el centro y los 6 sectores]
 
 #ejemplo[
   El estado \#1 se obtiene con $g_(1,2,3) = 100$ (arriba $a$, abajo $b$ y $c$), que también se puede escribir como $overline(g)_(1,2,3) = 011$. En el diagrama se rotula cada vértice con las dos combinaciones que lo generan (por ejemplo \#2 = 110 arriba, 001 abajo).
@@ -252,9 +286,12 @@ En la zona lineal de SPWM, la referencia *no puede superar* a la triangular (pic
   Como el tercer armónico es *igual en las tres fases* (es de modo común), *se cancela en las tensiones de línea* y la carga no lo ve.
 ]
 
-#imagen[Referencia con tercer armónico (azul) y fundamental aumentada (rojo punteado)]
+//#imagen[Referencia con tercer armónico (azul) y fundamental aumentada (rojo punteado)]
 
-Según la figura de la clase, la fundamental llega a aproximadamente $1.15$ veces el valor máximo de la referencia original (alrededor de un $15 %$ más de tensión con el mismo bus).
+#figure(
+  image("images/thi.png", width: 60%),
+  caption: [Referencia con tercer armónico (azul) y fundamental aumentada (rojo punteado)]
+) <fig:thi>
 
 // =====================================================================
 = SVM: Space Vector Modulation
@@ -268,7 +305,7 @@ $ bold(V)_("out") = (T_1 bold(v)_1 + T_2 bold(v)_2 + T_0 bold(v)_0) / T = D_1 bo
 
 con $T_1 + T_2 + T_0 = T$ (los tiempos suman siempre el período) y $D_i = T_i / T$ los ciclos de trabajo.
 
-#imagen[Descomposición de $bold(V)_("out")$ en $bold(v)_1 T_1$ y $bold(v)_3 T_3$ (o $bold(v)_2 T_2$) más el vector nulo]
+//#imagen[Descomposición de $bold(V)_("out")$ en $bold(v)_1 T_1$ y $bold(v)_3 T_3$ (o $bold(v)_2 T_2$) más el vector nulo]
 
 #idea[
   - El vector de referencia está entre dos vectores activos *adyacentes* ($bold(v)_k$ y $bold(v)_(k+1)$), que se aplican durante $T_1$ y $T_2$.
@@ -285,13 +322,17 @@ Las preguntas abiertas de la diapositiva son: ¿qué vector nulo se usa ($bold(v
 
 $ A = (|V_("ref")|) / (2/3 v_(d c)) $
 
-$ T_1 = T A (sin(pi/3 - alpha)) / (sin(pi/3)) quad quad T_2 = T A (sin(alpha)) / (sin(pi/3)) quad quad T_0 = T - T_1 - T_2 $
+$ T_1 = T A dot(sin(pi/3 - alpha)) / (sin(pi/3)) quad quad T_2 = T A dot (sin(alpha)) / (sin(pi/3)) quad quad T_0 = T - T_1 - T_2 $
 
 #ejemplo[
   $v_(d c) = 600 "V"$, período de conmutación $T = 100 mu"s"$, referencia $|V_("ref")| = 250 "V"$ a $20°$ dentro del sector 1:
+  
   - $A = 250 / (2/3 dot 600) = 250 / 400 = 0.625$
+  
   - $T_1 = 100 dot 0.625 dot sin(40°) / sin(60°) approx 46.4 mu"s"$ (se aplica $bold(v)_1$)
+  
   - $T_2 = 100 dot 0.625 dot sin(20°) / sin(60°) approx 24.7 mu"s"$ (se aplica $bold(v)_2$)
+  
   - $T_0 = 100 - 46.4 - 24.7 approx 28.9 mu"s"$ (vector nulo)
 
   Verificación: $T_1 + T_2 + T_0 = 100 mu"s"$. Como $T_1 > T_2$, el vector resultante queda más cerca de $bold(v)_1$, lo cual tiene sentido porque $20° < 30°$.
@@ -303,14 +344,18 @@ La zona lineal de cada técnica es el *círculo máximo* que puede recorrer la r
 
 #table(
   columns: (auto, 1fr, 1fr),
-  inset: 4pt, stroke: 0.5pt + gray, align: center + horizon,
+  inset: 8pt, stroke: 0.5pt + gray, align: center + horizon,
   fill: (x, y) => if y == 0 { azul.lighten(80%) },
   [], [*SPWM*], [*SVM*],
-  [Radio del círculo lineal], [$1/2 v_(d c)$], [$1/sqrt(3) v_(d c)$],
-  [Radio del hexágono], [$2/3 v_(d c)$], [$2/3 v_(d c)$],
+  [Radio del círculo lineal], [$1/2 dot v_(d c)$], [$1/sqrt(3) dot v_(d c)$],
+  [Radio del hexágono], [$2/3 dot v_(d c)$], [$2/3 dot v_(d c)$],
 )
 
-#imagen[Hexágono con los círculos de SPWM (radio $1/2 v_(d c)$) y SVM (radio $1/sqrt(3) v_(d c)$)]
+#figure(
+  image("images/svm2.png", width: 40%)
+) <fig:svm2>
+
+//#imagen[Hexágono con los círculos de SPWM (radio $1/2 v_(d c)$) y SVM (radio $1/sqrt(3) v_(d c)$)]
 
 #idea[
   El círculo de SVM es *más grande* que el de SPWM: $(1/sqrt(3)) / (1/2) = 2/sqrt(3) approx 1.155$. Con el mismo bus se obtiene aproximadamente *15 % más de tensión* (el mismo beneficio que con tercer armónico) o, a igual tensión, se necesita un bus menor.
@@ -320,6 +365,7 @@ La zona lineal de cada técnica es el *círculo máximo* que puede recorrer la r
   Con $v_(d c) = 600 "V"$: SPWM llega a $1/2 dot 600 = 300 "V"$ de pico de fase y SVM a $600 / sqrt(3) approx 346 "V"$.
 ]
 
+/*
 // =====================================================================
 = Resumen de fórmulas
 // =====================================================================
@@ -342,3 +388,5 @@ La zona lineal de cada técnica es el *círculo máximo* que puede recorrer la r
   [Tiempos SVM], [$T_1 = T A sin(pi/3 - alpha) / sin(pi/3)$, #h(4pt) $T_2 = T A sin(alpha) / sin(pi/3)$],
   [Amplitud normalizada], [$A = |V_("ref")| / (2/3 v_(d c))$],
 )
+
+*/

@@ -53,7 +53,7 @@ Si juntamos los dos circuitos compartiendo el mismo inductor, obtenemos una *ram
 //#imagen[Buck + Boost combinados en una rama con $Q_1$ y $Q_2$]
 
 #figure(
-  image("images/BuckBoost.svg", width: 100%)
+  image("images/BuckBoostBaked.pdf", width: 100%)
 ) <fig:BuckBoost>
 
 #idea[
@@ -202,13 +202,27 @@ $ v_(A B) = v_(A N) - v_(B N) $
 
 === Rango lineal y sobremodulación
 
+El valor rms del voltaje de línea a línea de frecuencia fundamental $V_"LL1"$ se traza como función de $m_a$. 
+De modo semejante al PWM monofásico, para valores lo bastante grandes de $m_a$, el PWM degenera a una 
+forma de onda de un inversor de ondas cuadradas. 
+
+$
+ V_("LL"_1, "rms") = sqrt(6)/2 dot m_a V_d
+$
+
+#figure(
+  image("images/lineal.png", width: 30%)
+) <fig:lineal>
+
 - *Lineal* ($m_a <= 1$): la fundamental crece proporcional a $m_a$:
-  $ V_("LL1,rms") = sqrt(3) / (2 sqrt(2)) dot m_a dot V_d approx 0.612 dot m_a dot V_d $
+  $ V_("LL1,rms") = sqrt(3) / (2 sqrt(2)) dot m_a dot V_d $
 - *Sobremodulación* ($m_a > 1$): la fundamental crece menos que proporcional y aparecen más armónicos.
 - *Onda cuadrada* ($m_a$ muy grande, 3.24 para $m_f = 15$): se llega al máximo posible:
-  $ V_("LL1,rms") = sqrt(6) / pi dot V_d approx 0.78 dot V_d $
+  $ V_("LL1,rms") = sqrt(6) / pi dot V_d $
 
-#imagen[$V_("LL1")$(rms)$ \/V_d$ en función de $m_a$: lineal, sobremodulación y onda cuadrada]
+
+
+//#imagen[$V_("LL1")$(rms)$ \/V_d$ en función de $m_a$: lineal, sobremodulación y onda cuadrada]
 
 #ejemplo[
   $V_d = 400 "V"$ y $m_a = 0.8$: $V_("LL1,rms") = 0.612 dot 0.8 dot 400 approx 196 "V"$ de línea. El máximo teórico (onda cuadrada) sería $0.78 dot 400 = 312 "V"$.
@@ -220,17 +234,29 @@ $ v_(A B) = v_(A N) - v_(B N) $
 
 En una rama, el transistor de arriba ($Q_1$) tiene su source en $v_a$, que *oscila entre $0$ y $V_d$*. Pero el gate se puede polarizar solo con unos $20 "V"$ respecto del source ($B V_(G S) approx 20 "V"$), mientras que $V_d approx 300$ a $400 "V"$. Por lo tanto, la tensión de gate de $Q_1$ debe *"flotar"* acompañando a $v_a$.
 
-#imagen[Rama con $V_(G S)$ en $Q_1$ y $Q_2$]
+//#imagen[Rama con $V_(G S)$ en $Q_1$ y $Q_2$]
+
+#figure(
+  image("images/problem.png", width: 50%)
+) <fig:problem>
 
 === Circuito Bootstrap
 
 Es la solución más simple y barata.
 
+#figure(
+  image("images/bootstrap.png", width: 50%)
+) <fig:bootstrap>
+
 + Cuando $Q_2$ está *ON*, $v_a approx 0 "V"$. Una fuente $V_(G G)$ carga el capacitor $C_B$ a través de un diodo.
 + Cuando $Q_2$ pasa a *OFF*, $v_a$ sube hasta $approx V_d$. El diodo se polariza en inversa y $C_B$ queda "flotando" cargado, con su borde negativo conectado a $v_a$.
 + Ese capacitor entrega la tensión de gate de $Q_1$ referida a $v_a$.
 
-#imagen[Bootstrap: $Q_2$ ON carga $C_B$; $Q_2$ OFF alimenta el gate de $Q_1$]
+#figure(
+  image("images/bootstrap2.png", width: 70%)
+) <fig:bootstrap>
+
+//#imagen[Bootstrap: $Q_2$ ON carga $C_B$; $Q_2$ OFF alimenta el gate de $Q_1$]
 
 #importante[
   Limitación: el capacitor solo se recarga cuando $Q_2$ conduce. Si $Q_2$ nunca se enciende, $C_B$ se descarga.
@@ -239,6 +265,11 @@ Es la solución más simple y barata.
 === Otros métodos de disparo
 
 - *Alimentación aislada + optoacoplador:* cada transistor tiene su propia fuente aislada y el comando llega por un optoacoplador.
+
+#figure(
+  image("images/alt.png", width: 40%)
+) <fig:alt>
+
 - *Disparo "magnético":* un transformador con aislación tipo flyback lleva la energía al gate.
 
 #importante[
@@ -255,7 +286,15 @@ $ bold(V)_(A n) = bold(E)_A + j omega_1 L bold(I)_A $
 
 donde $bold(E)_A$ es la tensión de la red (fija) y $bold(V)_(A n)$ es la que el inversor sintetiza. La diferencia es la caída en el inductor, $V_L = j omega_1 L bold(I)_A$, que *siempre está a $90°$ de la corriente*.
 
-#imagen[Inversor trifásico y diagrama fasorial (Fig. 8-25 y 8-37)]
+//#imagen[Inversor trifásico y diagrama fasorial (Fig. 8-25 y 8-37)]
+
+#figure(
+  image("images/diagrma-fasorial.png", width: 70%)
+) <fig:diagrma-fasorial>
+
+#figure(
+  image("images/diagrma-fasorial2.png", width: 50%)
+) <fig:diagrma-fasorial2>
 
 #idea[
   Cambiando *amplitud y fase* de $bold(V)_(A n)$ (el inversor lo controla con $m_a$ y la fase de la senoidal de control), se cambia $bold(I)_A$ y con ella el flujo de potencia. El ángulo $delta$ entre $bold(V)_(A n)$ y $bold(E)_A$ es el que mueve la potencia activa $P$.
@@ -283,6 +322,8 @@ donde $bold(E)_A$ es la tensión de la red (fija) y $bold(V)_(A n)$ es la que el
 
 // (Clase 15)
 // =====================================================================
+// 
+#pagebreak()
 = Convertidores directos y aislados
 // =====================================================================
 
@@ -294,9 +335,18 @@ Son convertidores DC-DC con *transformador* de aislación, relación $N_1 : N_2$
 - *Full Bridge:* cuatro transistores; el primario ve $plus.minus V_d$.
 - *Push-Pull:* dos transistores con primario de punto medio.
 
-#imagen[Half Bridge, Full Bridge y Push-Pull]
+
+//#imagen[Half Bridge, Full Bridge y Push-Pull]
+
+#figure(
+  image("images/basic.png", width: 100%)
+) <fig:basic>
 
 Para analizar cualquiera de ellos, se reemplaza la etapa de entrada por una fuente $plus.minus V_d$ con una llave en serie con el primario, un puente de diodos y un filtro LC. Se debe cumplir $I_o > I_("o,min")$ (veremos por qué).
+
+#figure(
+  image("images/basic2.png", width: 50%)
+) <fig:basic2>
 
 == Rectificador de salida: conducción con primario abierto
 
@@ -310,9 +360,11 @@ $ V_(N_2) = v_D - v_D = -v_D + v_D = 0 arrow.r.double V_(N_1) = 0 $
   Mientras todos los diodos conduzcan, el secundario queda *cortocircuitado* y la tensión en el transformador es cero. Así el convertidor "se comporta bien" en el tiempo muerto.
 ]
 
-#imagen[Puente rectificador con $i_L / 2$ por cada rama]
 
-*Tarea de la cátedra:* hacer el rectificador de 2 diodos con transformador de punto medio y repetir el análisis. ¿Tiene el mismo comportamiento?
+#figure(
+  image("images/oaa.png", width: 85%)
+) <fig:oaa>
+//#imagen[Puente rectificador con $i_L / 2$ por cada rama]
 
 == Transformador real y corriente de magnetización
 
@@ -322,12 +374,16 @@ Esta corriente se suma o se resta a la que lleva cada diodo, según su sentido:
 
 #table(
   columns: (auto, 1fr),
-  inset: 4pt, stroke: 0.5pt + gray, align: (center, left),
+  inset: 8pt, stroke: 0.5pt + gray, align: (center, left),
   fill: (x, y) => if y == 0 { azul.lighten(80%) },
   [*Sentido de $i_(L_m)$*], [*Corriente en los diodos*],
   [Sale por el punto], [Dos diodos con $i_L / 2 + i_(L_(m 2)) / 2$ y los otros dos con $i_L / 2 - i_(L_(m 2)) / 2$.],
   [Entra por el punto], [Lo mismo pero con los roles invertidos.],
 )
+
+#figure(
+  image("images/real.png", width: 60%)
+) <fig:real>
 
 #importante[
   Para que $V_(N_2) = 0$ cuando el primario está abierto, *todos* los diodos tienen que seguir conduciendo, es decir que ninguna corriente debe ser negativa:
@@ -341,15 +397,27 @@ Esta corriente se suma o se resta a la que lleva cada diodo, según su sentido:
 
 == Convertidor Full Bridge
 
+#figure(
+  image("images/fullbridge.png", width: 60%)
+) <fig:fullbridge>
+
 === Etapas de funcionamiento
 
 Se prenden las llaves *en diagonal*: primero el par $Q_1$ y luego, en el semiciclo siguiente, el par $Q_2$. Etapas:
+
+#figure(
+  image("images/diag.png", width: 60%)
+) <fig:diag>
 
 - *Durante $t_2$* (par $Q_1$ ON): $V_(N_1) = V_d$, $V_(N_2) = (N_2/N_1) V_d$, y el inductor de filtro $L_F$ ve $V_(L_F) = (N_2/N_1) V_d - V_o$, por lo que su corriente *sube*.
 - *Durante $t_(3,4,1,6)$* (todo apagado): $V_(N_1) = 0$, $V_(L_F) = -V_o$ y $i_(L_F)$ *baja*.
 - *Durante $t_5$* (par $Q_2$ ON): $V_(N_1) = -V_d$, el secundario invierte su polaridad, y el puente rectifica: $L_F$ vuelve a ver $(N_2/N_1) V_d - V_o$.
 
-#imagen[Full Bridge: formas de onda de $V_(N_1)$, $V_(N_2)$, $V_(L_F)$, $i_(L_F)$ e $i_(L_"mag")$]
+//#imagen[Full Bridge: formas de onda de $V_(N_1)$, $V_(N_2)$, $V_(L_F)$, $i_(L_F)$ e $i_(L_"mag")$]
+
+#figure(
+  image("images/graf.png", width: 50%)
+) <fig:graf>
 
 La corriente de magnetización *sube* con el primario en $+V_d$, se queda *constante* con el primario apagado y *baja* con el primario en $-V_d$: el transformador no se satura porque la tensión media es cero (alterna).
 
@@ -378,7 +446,11 @@ $ ((N_2) / (N_1) V_d - V_o) D T_"sw" = V_o (1 - D) T_"sw" $
 
 El *estator* tiene tres bobinados (fases A, B y C) alimentados con tres corrientes desfasadas $120°$. Eso crea un *campo magnético giratorio*. El *rotor* es una jaula de ardilla que "persigue" ese campo, pero siempre más lento: por eso se llama *asincrónico*.
 
-#imagen[Motor de inducción: estator, rotor y campo giratorio]
+//#imagen[Motor de inducción: estator, rotor y campo giratorio]
+
+#figure(
+  image("images/induction3.png", width: 90%)
+) <fig:induction3>
 
 #definicion[
   *Velocidad de sincronismo* (a la que gira el campo magnético):
@@ -399,15 +471,19 @@ El *estator* tiene tres bobinados (fases A, B y C) alimentados con tres corrient
 
 La curva $T_(e m)$ vs. $omega_r$ tiene una zona prácticamente *lineal* cerca del sincronismo (motor tipo B). Esa es la zona que se usa para *variar velocidad*: el motor trabaja a un deslizamiento chico.
 
-Como la curva se puede correr en frecuencia, con un inverter el motor *puede arrancar con torque máximo* partiendo desde un $omega_s$ bajo (recta naranja de la figura).
+Como la curva se puede correr en frecuencia, con un inverter el motor *puede arrancar con torque máximo* partiendo desde un $omega_s$ bajo (recta naranja de la figura @fig:induction3).
 
-#imagen[Curva torque-velocidad (Fig. 14-3)]
+//#imagen[Curva torque-velocidad (Fig. 14-3)]
 
 === Aceleración y punto de equilibrio
 
 $ T_"motor" - T_"resistente" = J dot(omega) $
 
 La suma de torques es igual al momento de inercia por la aceleración angular. El motor se acelera mientras el torque motor es mayor que el resistente; se estabiliza en la *intersección* de ambas curvas (punto de equilibrio). Si cambia la carga, cambia la velocidad de equilibrio.
+
+#figure(
+  image("images/tmotor.png", width: 60%)
+) <fig:tmotor>
 
 #ejemplo[
   Una cinta transportadora que se carga con más peso aumenta $T_"resistente"$. La intersección se desplaza hacia una velocidad algo menor (más deslizamiento), hasta que el motor entrega el nuevo torque.
@@ -423,7 +499,11 @@ $ B = (integral_0^t V_(L m) dif t) / (N A_"min") = V_"RMS" / (4.44 f N A) $
   Para que $B$ sea constante hay que mantener *$V_"RMS" / f$ constante*. Así la curva torque-velocidad *se desplaza* en frecuencia sin cambiar de forma ni tamaño (cada recta de la figura $f_1, f_2, f_3, f_4$ es la misma curva corrida).
 ]
 
-#imagen[Curvas $T_(e m)$ para distintas frecuencias con $phi_(a g)$ constante]
+//#imagen[Curvas $T_(e m)$ para distintas frecuencias con $phi_(a g)$ constante]
+
+#figure(
+  image("images/Bcte.png", width: 50%)
+) <fig:tmotor>
 
 #ejemplo[
   Motor de $380 "V"$ / $50 "Hz"$ ($V / f = 7.6 "V/Hz"$):
@@ -446,7 +526,11 @@ Se *baja de golpe* la frecuencia de $f_0$ a $f_1 < f_0$. Para los tiempos de la 
 
 La máquina pasa a funcionar como *generador*: convierte energía mecánica en eléctrica y la entrega al bus de continua $V_d$.
 
-#imagen[Frenado: la frecuencia baja de $f_0$ a $f_1$ y el torque se hace negativo]
+//#imagen[Frenado: la frecuencia baja de $f_0$ a $f_1$ y el torque se hace negativo]
+
+#figure(
+  image("images/gen.png", width: 50%)
+) <fig:gen>
 
 #ejemplo[
   Motor de 2 pares de polos girando a 1450 RPM (alimentado a 50 Hz, $omega_s = 1500 "RPM"$). Se baja $f$ a 40 Hz → $omega_(s 1) = 1200 "RPM"$. Como el rotor sigue a 1450 RPM $> 1200$, el motor frena y devuelve energía. El bus $V_d$ sube de tensión: hay que *devolverla a la red* (inverter bidireccional) o *disiparla* en una resistencia.
@@ -454,12 +538,19 @@ La máquina pasa a funcionar como *generador*: convierte energía mecánica en e
 
 == Conexión Back to Back
 
+El propósito fundamental de la conexión Back-to-Back  es conectar dos sistemas de corriente alterna (CA) que operan a frecuencias o tensiones distintas, permitiendo flujo bidireccional de potencia.
+
 Se conectan *dos inversores* compartiendo el mismo bus de continua (capacitor $V_d$):
 
 - *Lado motor* ($V_x$, $V_y$, $V_z$): alimenta la máquina con $V / F = "cte"$ y puede intercambiar $P$ y $Q$.
 - *Lado red* ($V_a$, $V_b$, $V_c$): conectado a la red por inductores; maneja la potencia que entra o sale.
 
-#imagen[Back to Back con $P$ de la red al motor]
+//#imagen[Back to Back con $P$ de la red al motor]
+
+#figure(
+  image("images/backToback.png", width: 80%)
+) <fig:backToback>
+
 
 Tiene varios modos de uso:
 
@@ -471,15 +562,28 @@ Tiene varios modos de uso:
   En un aerogenerador la frecuencia que genera la máquina varía con el viento. El inversor del lado generador la regula y el del lado red siempre entrega $50 "Hz"$ a la red.
 ]
 
+#table(
+  columns: (1.1fr, 1.4fr, 1.4fr),
+  inset: 6pt, stroke: 0.5pt + gray, align: (left, left, left),
+  fill: (x, y) => if y == 0 { azul.lighten(80%) },
+  [*Característica*], [*Rectificador a diodos + Inversor*], [*Inversor Back to Back*],
+  [Flujo de energía], [Unidireccional (Red $arrow.r$ Carga)], [*Bidireccional* (Red $arrow.l.r$ Carga)],
+  [Frenado del motor], [Disipativo (resistencia de frenado)], [*Regenerativo* (devuelve energía a la red)],
+  [Corriente de red], [Picos con alta distorsión (alto THD)], [*Senoidal limpia* con PWM (bajo THD)],
+  [Factor de potencia], [No controlable (fijo)], [*Controlable* (típicamente $cos phi = 1$ o reactiva)],
+  [Tensión de bus $V_d$], [Variable con la carga y la red], [*Regulada activamente* constante],
+  [Aplicaciones típicas], [Cargas pasivas (bombas, ventiladores)], [Aerogeneradores, tracción (trenes), grúas],
+)
+
 == FACTS (Flexible AC Transmission Systems)
 
 Un inversor conectado a la red a través de inductores puede controlar *potencia activa y reactiva* sin cambiar la fuente de continua.
 
 Las cargas no lineales (fábricas, rectificadores, hornos) no solo consumen $P$ e intercambian $Q$: producen perturbaciones, armónicas y no linealidades. La potencia total es:
 
-$ S(t) = P + Q + tilde(q)(t) + tilde(p)(t) $
+$ S(t) = P + underbrace( Q + tilde(q)(t) + tilde(p)(t), "valor medio nulo") $
 
-donde $tilde(q)(t) + tilde(p)(t)$ tienen *valor medio nulo*.
+
 
 #importante[
   Los sistemas eléctricos convencionales deberían entregar *solo $P$* para maximizar el rendimiento. El resto de los términos (reactiva y armónicos) es lo que un FACTS compensa.
@@ -489,15 +593,19 @@ donde $tilde(q)(t) + tilde(p)(t)$ tienen *valor medio nulo*.
   Como $tilde(q)$ y $tilde(p)$ tienen valor medio nulo, solo producen un *ripple* $Delta V_d$ en el capacitor del bus: el inverter *no necesita una fuente de energía extra* para compensarlos.
 ]
 
-#imagen[FACTS: inversor en paralelo con la red y la carga no lineal]
+//#imagen[FACTS: inversor en paralelo con la red y la carga no lineal]
 
-// =====================================================================
+#figure(
+  image("images/facts.png", width: 90%)
+) <fig:facts>
+
+/*
 == Resumen de fórmulas
-// =====================================================================
+
 
 #table(
   columns: (1fr, auto),
-  inset: 5pt, stroke: 0.5pt + gray, align: (left, center),
+  inset: 8pt, stroke: 0.5pt + gray, align: (left, center),
   fill: (x, y) => if y == 0 { azul.lighten(80%) },
   [*Concepto*], [*Fórmula*],
   [Salida de la rama (SPWM)], [$v_(A o) = (v_"control" / hat(V)_"tri") V_d / 2$],
@@ -511,3 +619,4 @@ donde $tilde(q)(t) + tilde(p)(t)$ tienen *valor medio nulo*.
   [Dinámica del rotor], [$T_"motor" - T_"resistente" = J dot(omega)$],
   [Inversor y red (fasores)], [$bold(V)_(A n) = bold(E)_A + j omega_1 L bold(I)_A$],
 )
+*/

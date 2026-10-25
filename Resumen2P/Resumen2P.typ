@@ -1,5 +1,7 @@
 #import "@preview/mitex:0.2.7": *
  
+#let is-preview = sys.inputs.at("x-preview", default: none) != none
+ 
  ``#set document(
   author: "Ignacio Sammartino",
   description: 
@@ -91,7 +93,7 @@ Resumen
 #set math.equation(numbering: none)
 
 #set page(columns: 2)
-#outline()
+#outline(depth: 2)
 #set page(columns: 1)
 
 #pagebreak()
